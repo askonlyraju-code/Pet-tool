@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Keep track of your pet's daily routine, vaccination schedule, and diary entries with our easy-to-use Pet Routine Tracker.">
+    <meta name="keywords" content="pet routine tracker, vaccine reminder, pet diary, pet care, pet health">
+    <title>PetPal Tracker - Manage Your Pet's Routine and Health</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4e7ae6;
+            --secondary: #8e6bc9;
+            --accent: #6cbd8e;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --success: #28a745;
+            --info: #17a2b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7ff;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: white;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .hero h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            background: white;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-item input[type="checkbox"] {
+            margin-right: 1rem;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .task-item label {
+            flex: 1;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .task-item.completed label {
+            text-decoration: line-through;
+            color: var(--gray);
+        }
+
+        .vaccine-card {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vaccine-info h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .vaccine-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .vaccine-actions button {
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .vaccine-actions button:hover {
+            background: var(--secondary);
+        }
+
+        .diary-entry {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .diary-entry:last-child {
+            border-bottom: none;
+        }
+
+        .diary-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .diary-date {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .diary-content {
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .add-entry {
+            margin-top: 2rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 120px;
+            margin-bottom: 1rem;
+        }
+
+        .ad-container {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 2rem 0;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ad-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section p {
+            margin-bottom: 1rem;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                border-radius: 8px;
+                margin-bottom: 0.5rem;
+            }
+            
+            .vaccine-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-paw"></i>
+                    <h1>PetPal Tracker</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Never Forget Your Pet's Needs Again</h2>
+            <p>Track daily routines, vaccination schedules, and record special moments with your furry friend all in one place.</p>
+            <a href="#tracker" class="btn">Get Started</a>
+        </section>
+
+        <div class="ad-container">
+            <div>
+                <div class="ad-label">Advertisement</div>
+                <!-- Google AdSense Ad Unit -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-INSERT-ADSLOT-ID-HERE"
+                     data-ad-slot="INSERT-ADSLOT-ID-HERE"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+
+        <section id="tracker">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="daily">Daily Routine</button>
+                <button class="tab-btn" data-tab="vaccine">Vaccine Reminder</button>
+                <button class="tab-btn" data-tab="diary">Pet Diary</button>
+            </div>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="daily-tab">
+                    <h2>Daily Checklist</h2>
+                    <p>Track your pet's daily activities and ensure nothing is missed.</p>
+                    
+                    <ul class="task-list">
+                        <li class="task-item">
+                            <input type="checkbox" id="task1">
+                            <label for="task1">Morning feeding</label>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" id="task2">
+                            <label for="task2">Fresh water</label>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" id="task3">
+                            <label for="task3">Morning walk</label>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" id="task4">
+                            <label for="task4">Play time</label>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" id="task5">
+                            <label for="task5">Evening feeding</label>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" id="task6">
+                            <label for="task6">Evening walk</label>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" id="task7">
+                            <label for="task7">Grooming</label>
+                        </li>
+                        <li class="task-item">
+                            <input type="checkbox" id="task8">
+                            <label for="task8">Medication</label>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane" id="vaccine-tab">
+                    <h2>Vaccine Reminder</h2>
+                    <p>Keep track of your pet's vaccination schedule and never miss an important date.</p>
+                    
+                    <div class="vaccine-card">
+                        <div class="vaccine-info">
+                            <h3>Rabies Vaccine</h3>
+                            <div class="vaccine-date">Last administered: May 15, 2023</div>
+                            <div class="vaccine-date">Next due: May 15, 2024</div>
+                        </div>
+                        <div class="vaccine-actions">
+                            <button>Mark as Done</button>
+                        </div>
+                    </div>
+                    
+                    <div class="vaccine-card">
+                        <div class="vaccine-info">
+                            <h3>Distemper Vaccine</h3>
+                            <div class="vaccine-date">Last administered: March 10, 2023</div>
+                            <div class="vaccine-date">Next due: March 10, 2024</div>
+                        </div>
+                        <div class="vaccine-actions">
+                            <button>Mark as Done</button>
+                        </div>
+                    </div>
+                    
+                    <div class="vaccine-card">
+                        <div class="vaccine-info">
+                            <h3>Bordetella Vaccine</h3>
+                            <div class="vaccine-date">Last administered: January 5, 2023</div>
+                            <div class="vaccine-date">Next due: January 5, 2024</div>
+                        </div>
+                        <div class="vaccine-actions">
+                            <button>Mark as Done</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="diary-tab">
+                    <h2>Pet Diary</h2>
+                    <p>Record special moments, behaviors, and notes about your pet.</p>
+                    
+                    <div class="diary-entry">
+                        <div class="diary-header">
+                            <span class="diary-date">October 15, 2023</span>
+                        </div>
+                        <div class="diary-content">
+                            <p>Max was very energetic today during our walk in the park. He made a new friend - a golden retriever named Bailey. He's been sleeping soundly since we got home.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="diary-entry">
+                        <div class="diary-header">
+                            <span class="diary-date">October 12, 2023</span>
+                        </div>
+                        <div class="diary-content">
+                            <p>Took Max to the vet for his annual checkup. The vet said he's in excellent health but recommended we watch his weight. Started measuring his food portions more carefully.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="add-entry">
+                        <h3>Add New Entry</h3>
+                        <textarea placeholder="Write about your pet's day..."></textarea>
+                        <button class="btn">Save Entry</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="ad-container">
+            <div>
+                <div class="ad-label">Advertisement</div>
+                <!-- Google AdSense Ad Unit -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-INSERT-ADSLOT-ID-HERE"
+                     data-ad-slot="INSERT-ADSLOT-ID-HERE"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About PetPal Tracker</h3>
+                    <p>PetPal Tracker helps pet owners manage their pet's daily routines, vaccination schedules, and record special moments in one convenient place.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Email: support@petpaltracker.com</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 PetPal Tracker. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and panes
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Show corresponding tab pane
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+
+        // Task completion functionality
+        document.querySelectorAll('.task-item input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const taskItem = checkbox.closest('.task-item');
+                if (checkbox.checked) {
+                    taskItem.classList.add('completed');
+                } else {
+                    taskItem.classList.remove('completed');
+                }
+            });
+        });
+
+        // Vaccine reminder functionality
+        document.querySelectorAll('.vaccine-actions button').forEach(button => {
+            button.addEventListener('click', () => {
+                const vaccineCard = button.closest('.vaccine-card');
+                const vaccineName = vaccineCard.querySelector('h3').textContent;
+                alert(`Congratulations! You've marked ${vaccineName} as administered.`);
+            });
+        });
+
+        // Diary functionality
+        const diaryTextarea = document.querySelector('.add-entry textarea');
+        const saveButton = document.querySelector('.add-entry .btn');
+
+        saveButton.addEventListener('click', () => {
+            if (diaryTextarea.value.trim() !== '') {
+                const today = new Date();
+                const dateString = today.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                const diaryEntry = document.createElement('div');
+                diaryEntry.className = 'diary-entry';
+                diaryEntry.innerHTML = `
+                    <div class="diary-header">
+                        <span class="diary-date">${dateString}</span>
+                    </div>
+                    <div class="diary-content">
+                        <p>${diaryTextarea.value}</p>
+                    </div>
+                `;
+                
+                document.querySelector('#diary-tab').insertBefore(diaryEntry, document.querySelector('.add-entry'));
+                diaryTextarea.value = '';
+                alert('Diary entry saved successfully!');
+            } else {
+                alert('Please write something before saving.');
+            }
+        });
+    </script>
+</body>
+</html>
